@@ -1,4 +1,11 @@
-import { Button, HStack, Text, Box, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  Text,
+  Box,
+  useToast,
+  Container,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import AddingUrl from "./AddingUrl";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
@@ -15,6 +22,7 @@ import { user } from "../Services/http-service_user";
 import userService from "../Services/userService";
 import { CONSTANTS } from "../Constants/appConstants";
 import Pagination from "./Pagination";
+import UrlCards from "./UrlCards";
 
 export interface User_urls {
   alias: string;
@@ -49,7 +57,7 @@ const Userpage = () => {
       navigate("/login", { replace: true });
     }
 
-    if (pageNo > (urlinfo?.totalPages || Number.MAX_VALUE)) {
+    if (pageNo + 1 > (urlinfo?.totalPages || Number.MAX_VALUE)) {
       setSearchParams({ pageNo: String((urlinfo?.totalPages || 1) - 1) });
     }
   }, [getStatus, searchParams]);
@@ -72,14 +80,12 @@ const Userpage = () => {
       success: {
         title: "Url Copied",
         colorScheme: "teal",
-        variant: "subtle",
         duration: 2000, // 2 seconds
         isClosable: true,
         position: "bottom",
       },
       error: {
         title: "Error copying",
-        variant: "subtle",
         duration: 2000, // 2 seconds
         isClosable: true,
         position: "bottom",
@@ -103,7 +109,7 @@ const Userpage = () => {
   }
 
   return (
-    <Box marginTop={5} p={5}>
+    <Container mt={50} maxW={"auto"} p={5}>
       <HStack justifyContent={"right"}>
         <Text>
           <Button
@@ -131,14 +137,29 @@ const Userpage = () => {
           Logout
         </Button>
       </HStack>
-      <UrlTable
-        deleteUrl={deleteUrl}
-        handleCopy={handleCopy}
-        handleUpdate={handleUpdate}
-        setUpdate={setUpdate}
-        update={update}
-        urlinfo={urlinfo}
-      ></UrlTable>
+      <Box
+        display={{ base: "none", md: "table", lg: "flex" }}
+        justifyContent={"center"}
+      >
+        <UrlTable
+          deleteUrl={deleteUrl}
+          handleCopy={handleCopy}
+          handleUpdate={handleUpdate}
+          setUpdate={setUpdate}
+          update={update}
+          urlinfo={urlinfo}
+        ></UrlTable>
+      </Box>
+      <Box display={{ base: "flex", md: "none" }}>
+        <UrlCards
+          deleteUrl={deleteUrl}
+          handleCopy={handleCopy}
+          handleUpdate={handleUpdate}
+          setUpdate={setUpdate}
+          update={update}
+          urlinfo={urlinfo}
+        ></UrlCards>
+      </Box>
 
       <Box hidden={urlinfo?.content.length == 0}>
         <Pagination
@@ -148,10 +169,10 @@ const Userpage = () => {
         ></Pagination>
       </Box>
 
-      <Box marginTop={10}>
+      <Box marginTop={20} display={"flex"} justifyContent={"center"}>
         <AddingUrl handleAdd={(data) => addUrl(data)}></AddingUrl>
       </Box>
-    </Box>
+    </Container>
   );
 };
 

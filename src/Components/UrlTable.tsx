@@ -2,14 +2,6 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverFooter,
-  PopoverHeader,
-  PopoverTrigger,
   Table,
   TableCaption,
   TableContainer,
@@ -18,16 +10,12 @@ import {
   Th,
   Thead,
   Tr,
-  useDisclosure,
+  VisuallyHidden,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
-import UpdatingData from "./UpdatingData";
-import ExpandableText from "./ExpandableText";
-import { User_urls } from "./Userpage";
 import { CONSTANTS } from "../Constants/appConstants";
-import CustomMessage from "./CustomMessage";
 import { UrlFetchResponse } from "../Services/http-service";
-import { useSearchParams } from "react-router-dom";
+import CustomMessage from "./CustomMessage";
+import UpdatingData from "./UpdatingData";
 interface Props {
   urlinfo: UrlFetchResponse | undefined;
   update: string;
@@ -52,14 +40,17 @@ const UrlTable = ({
   }
   return (
     <Box>
-      <TableContainer marginBottom={4} marginLeft={10}>
+      <TableContainer marginBottom={4}>
         <Table colorScheme="gray" variant={"simple"}>
           <TableCaption>URL'S</TableCaption>
           <Thead>
             <Tr>
               <Th>Alias</Th>
-              <Th>Original URL</Th>
-              <Th>Shortnened URL</Th>
+              <Th display={{ base: "none", lg: "table-cell" }}>Original URL</Th>
+              <Th display={{ base: "none", md: "table-cell" }}>
+                Shortnened URL
+              </Th>
+              <Th>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -75,19 +66,53 @@ const UrlTable = ({
                 />
               ) : (
                 <Tr key={index}>
-                  <Td>{dat.alias}</Td>
                   <Td>
-                    <ExpandableText>{dat.url}</ExpandableText>
+                    {dat.alias}
+                    <Box as="dl">
+                      <VisuallyHidden>
+                        <Box as="dt">Original URL</Box>
+                      </VisuallyHidden>
+                      <Box
+                        maxW={{ base: "150px", sm: "auto" }}
+                        as="dd"
+                        isTruncated
+                        display={{ lg: "none" }}
+                        color={"GrayText"}
+                        fontWeight={"350"}
+                      >
+                        {dat.url}
+                      </Box>
+                      <VisuallyHidden>
+                        <Box as="dt">Shortened URL</Box>
+                      </VisuallyHidden>
+                      <Box
+                        as="dd"
+                        maxW={{ base: "150", sm: "full" }}
+                        isTruncated
+                        display={{ md: "none" }}
+                        color={"GrayText"}
+                        fontWeight={"350"}
+                      >
+                        {base + "/" + dat.alias}
+                      </Box>
+                    </Box>
                   </Td>
-                  <Td>{base + "/" + dat.alias}</Td>
+                  <Td
+                    maxWidth={{ base: "200px", sm: "auto" }}
+                    display={{ base: "none", lg: "table-cell" }}
+                    isTruncated
+                  >
+                    {dat.url}
+                  </Td>
+                  <Td display={{ base: "none", md: "table-cell" }} isTruncated>
+                    {base + "/" + dat.alias}
+                  </Td>
                   <Td>
                     <ButtonGroup justifyContent={"space-between"}>
                       <Button
                         onClick={() => {
                           handleCopy(base + "/" + dat.alias);
                         }}
-                        size="sm"
-                        variant="outline"
                         colorScheme="teal"
                       >
                         Copy
@@ -97,8 +122,6 @@ const UrlTable = ({
                         onClick={() => {
                           deleteUrl(dat.alias);
                         }}
-                        size="sm"
-                        variant="outline"
                         colorScheme="red"
                       >
                         Delete
@@ -106,8 +129,6 @@ const UrlTable = ({
 
                       <Button
                         onClick={() => setUpdate(dat.alias)}
-                        size="sm"
-                        variant="outline"
                         colorScheme="blue"
                       >
                         Update

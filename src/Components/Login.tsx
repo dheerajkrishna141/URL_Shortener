@@ -3,8 +3,16 @@ import {
   AlertIcon,
   Box,
   Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Container,
+  Flex,
+  FormControl,
   FormLabel,
   HStack,
+  Image,
   Input,
   InputGroup,
   InputRightElement,
@@ -22,6 +30,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import LoginContext from "../StateManagement/LoginContext";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { CONSTANTS } from "../Constants/appConstants";
+import { color } from "framer-motion";
 
 const schema = z.object({
   userName: z.string().email({ message: "Enter a valid Email" }),
@@ -83,69 +92,89 @@ const Login = () => {
         navigate("/userpage", { replace: true });
       })
       .catch((er) => {
-        console.log(er);
-        setLoginErr(er.response.data.message);
+        toast({
+          title: er.response.data.message,
+          status: "error",
+          duration: 5000, // 5 seconds
+          isClosable: true,
+          position: "top",
+        });
       });
   };
 
   return (
     <>
-      {/* {getStatus() === "false" && message && (
-        <Alert status="error" variant={"left-accent"} color={"orangered"}>
-          <AlertIcon />
-          {message}
-        </Alert>
-      )} */}
-      {loginErr && (
-        <Alert status="error" variant={"left-accent"} color={"orangered"}>
-          <AlertIcon />
-          {loginErr}
-        </Alert>
-      )}
-
-      <form
-        onSubmit={handleSubmit((data) => {
-          handleLogin(data);
-          // reset();
-        })}
-      >
-        <Box marginBottom={5}>
-          <FormLabel htmlFor="username">Username</FormLabel>
-          <Input {...register("userName")} type="email" id="EmailId"></Input>
-          {errors.userName && (
-            <Text align="left" color={"red"}>
-              {errors.userName.message}
-            </Text>
-          )}
-        </Box>
-        <Box marginBottom={5}>
-          <FormLabel htmlFor="password">Password</FormLabel>
-          <InputGroup>
-            <Input
-              {...register("password")}
-              type={pvisible ? "text" : "password"}
-              id="password"
-            ></Input>
-            <InputRightElement>
-              <MdOutlineRemoveRedEye
-                size={25}
-                onClick={() => setPVisible(!pvisible)}
-              />
-            </InputRightElement>
-            {errors.password && (
-              <Text align="left" color={"red"}>
-                {errors.password.message}
+      <Container marginTop={130}>
+        <Card shadow={"lg"}>
+          <form
+            onSubmit={handleSubmit((data) => {
+              handleLogin(data);
+              // reset();
+            })}
+          >
+            <CardHeader ml={10} mt={5}>
+              <Text fontSize={"30px"} fontWeight={"500"}>
+                Login
               </Text>
-            )}
-          </InputGroup>
-        </Box>
-        <HStack justifyContent={"center"}>
-          <Button marginEnd={5} type="submit">
-            Submit
-          </Button>
-          <Link to={"/register"}>Not registered?click here</Link>
-        </HStack>
-      </form>
+            </CardHeader>
+            <CardBody ml={10}>
+              {/* <Box
+                marginBottom={5}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+              > */}
+              <FormControl width={"70%"}>
+                <FormLabel htmlFor="username" textAlign="start">
+                  Username
+                </FormLabel>
+                <Input
+                  {...register("userName")}
+                  type="email"
+                  id="EmailId"
+                  width="100%"
+                  autoFocus
+                ></Input>
+                {errors.userName && (
+                  <Text align="left" color={"red"} mt={2}>
+                    {errors.userName.message}
+                  </Text>
+                )}
+              </FormControl>
+              <FormControl width={"70%"} mt={5}>
+                <FormLabel htmlFor="password" textAlign="start">
+                  Password
+                </FormLabel>
+                <InputGroup width="100%">
+                  <Input
+                    {...register("password")}
+                    type={pvisible ? "text" : "password"}
+                    id="password"
+                  ></Input>
+                  <InputRightElement>
+                    <MdOutlineRemoveRedEye
+                      size={25}
+                      onClick={() => setPVisible(!pvisible)}
+                    />
+                  </InputRightElement>
+                </InputGroup>
+                {errors.password && (
+                  <Text align="left" color={"red"} mt={2}>
+                    {errors.password.message}
+                  </Text>
+                )}
+              </FormControl>
+              {/* </Box> */}
+            </CardBody>
+            <CardFooter justifyContent={"end"}>
+              <HStack spacing={2}>
+                <Button type="submit">Submit</Button>
+                <Link to={"/register"}>Not registered? Click here</Link>
+              </HStack>
+            </CardFooter>
+          </form>
+        </Card>
+      </Container>
     </>
   );
 };

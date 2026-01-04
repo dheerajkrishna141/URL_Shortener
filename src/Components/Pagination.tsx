@@ -21,7 +21,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }: Props) => {
       <IconButton
         aria-label=""
         icon={<ChevronLeftIcon />}
-        isDisabled={page === 1}
+        isDisabled={page <= 1}
         onClick={() => handlePageChange(page - 1)}
       />
       {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (

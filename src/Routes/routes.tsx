@@ -6,7 +6,7 @@ import Register from "../Components/Register";
 import Userpage from "../Components/Userpage";
 import NotFound from "../Components/NotFound";
 import Profile from "../Components/Profile";
-import PasswordChange from "../Components/passwordChange";
+import PasswordChange from "../Components/PasswordChange";
 
 const router = createBrowserRouter([
   {
